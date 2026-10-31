@@ -1,12 +1,12 @@
-import os
 import asyncio
+import os
 import threading
 from http.server import HTTPServer, BaseHTTPRequestHandler
 from dotenv import load_dotenv
 
 load_dotenv()
 
-# --- 1. Мини-веб-сервер для Render ---
+# --- 1. Веб-сервер для Render (держит порт) ---
 class SimpleHandler(BaseHTTPRequestHandler):
     def do_GET(self):
         self.send_response(200)
@@ -19,20 +19,20 @@ class SimpleHandler(BaseHTTPRequestHandler):
 def run_server():
     port = int(os.environ.get("PORT", 10000))
     server = HTTPServer(("0.0.0.0", port), SimpleHandler)
-    print(f"🌐 Веб-сервер успешно запущен на порту {port}")
+    print(f"🌐 Веб-сервер запущен на порту {port}")
     server.serve_forever()
 
-# --- 2. Основная логика ---
-async def main():
-    print("🚀 Бот запущен и работает!")
-    # Здесь держим бесконечный цикл, чтобы приложение не выключалось
-    while True:
-        await asyncio.sleep(3600)
+# --- 2. Запуск твоего бота ---
+async def start_bot():
+    print("🤖 Запускаем логику бота...")
+    # Сюда подключай своего бота (например, импорт твоего диспетчера и запуск polling)
+    # Например: from bot_file import dp, bot
+    # await dp.start_polling(bot)
 
 if __name__ == "__main__":
-    # Запускаем веб-сервер в отдельном потоке
+    # Запускаем веб-сервер в фоновом потоке
     server_thread = threading.Thread(target=run_server, daemon=True)
     server_thread.start()
 
-    # Запускаем бесконечный асинхронный цикл в главном потоке
-    asyncio.run(main())
+    # Запускаем бота в главном потоке
+    asyncio.run(start_bot())
